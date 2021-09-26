@@ -1,13 +1,14 @@
 package com.example.bankapisberstart.service;
 
 import com.example.bankapisberstart.dao.ClientDao;
+import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
 import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
 import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.output_dto.CardOutDto;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
-import com.example.bankapisberstart.entity.Client;
 import com.example.bankapisberstart.exception_handling.NoSuchClientException;
+import com.example.bankapisberstart.utils.BalanceConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,13 +40,10 @@ public class ClientServiceImpl  implements ClientService{
         log.info(login + " запрашивает список счетов!");
 
         List<BankAccount> bankAccounts = clientDao.getAccountListFromClient(login);
+        bankAccounts = bankAccounts.stream()
+                .filter(BankAccount::isActive).collect(Collectors.toList());
 
-        if (!(bankAccounts == null)){
-            bankAccounts = bankAccounts.stream()
-                    .filter(BankAccount::isActive).collect(Collectors.toList());
-        }
-
-        if (bankAccounts == null || bankAccounts.isEmpty()) {
+        if (bankAccounts.isEmpty()) {
             String message = "У клиента " + login + " нет активных счетов";
             throw new NoSuchClientException(message);
         }
@@ -75,14 +73,11 @@ public class ClientServiceImpl  implements ClientService{
         log.info(login + " запрашивает список карт");
 
         List <Card> cards = clientDao.getCardsListFromClientLogin(login);
+        cards = cards.stream()
+                .filter(Card::isActive)
+                .collect(Collectors.toList());
 
-        if (!(cards == null)){
-            cards = cards.stream()
-                    .filter(Card::isActive)
-                    .collect(Collectors.toList());
-        }
-
-        if (cards == null || cards.isEmpty()) {
+        if (cards.isEmpty()) {
             String message = "У клиента " + login + " нет активных карт";
             throw new NoSuchClientException(message);
         }
@@ -94,5 +89,46 @@ public class ClientServiceImpl  implements ClientService{
         }
 
         return cardOutDtoList;
+    }
+
+    /**
+     * Метод получает параметры запроса. Проверяет валидность номера карты или счета в случае невалидности
+     * кидает NoSuchClientException. В зависимости от длины номера получает список карт/счетов клиента
+     * проверяет есть ли среди них активные с подходящим номером и возвращает баланс.
+     * @param requestParam - параметры передающиеся в Get запросе
+     * @return balance
+     */
+    @Override
+    @Transactional
+    public String getBalance(GetBalanceDto requestParam) {
+        String login = requestParam.getLogin();
+        String number = requestParam.getNumber();
+
+        if (number.length() == 16) {
+            log.info(login + " запрашивает баланс по номеру карты " + number);
+            String message = login + " не имеет активных карт с номером " + number;
+
+            Card card = clientDao.getCardsListFromClientLogin(login).stream()
+                    .filter(Card::isActive)
+                    .filter(x -> x.getNumber().equals(number))
+                    .findFirst().orElseThrow(() -> new NoSuchClientException(message));
+
+            return BalanceConverter.convertBalanceFromOutDto(card.getBankAccount().getBalance());
+
+        } else if (number.length() == 20){
+            log.info(login + " запрашивает баланс по номеру счета " + number);
+            String message = login + " не имеет активных счетов с номером " + number;
+
+            BankAccount bankAccount = clientDao.getAccountListFromClient(login).stream()
+                    .filter(BankAccount::isActive)
+                    .filter(x -> x.getNumber().equals(number))
+                    .findFirst().orElseThrow(() -> new NoSuchClientException(message));
+
+            return BalanceConverter.convertBalanceFromOutDto(bankAccount.getBalance());
+
+        } else {
+            String message = login + " запросил баланс с  не валидным номер карты или счета";
+            throw new NoSuchClientException(message);
+        }
     }
 }

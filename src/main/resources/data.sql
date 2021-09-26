@@ -16,7 +16,7 @@ CREATE TABLE clients
 CREATE TABLE accounts
 (
     id              BIGINT NOT NULL UNIQUE,
-    account_number  VARCHAR (255) NOT NULL UNIQUE,
+    account_number  VARCHAR (20) NOT NULL UNIQUE,
     currency        VARCHAR (255) NOT NULL,
     balance         BIGINT NOT NULL DEFAULT 0  CHECK (balance > 0 OR balance = 0),
     client_id       BIGINT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE cards
 (
     id              BIGINT NOT NULL AUTO_INCREMENT,
     isactive        BIT(1) NOT NULL DEFAULT true,
-    card_number          VARCHAR (16) NOT NULL UNIQUE,
+    card_number     VARCHAR (16) NOT NULL UNIQUE,
     client_id       BIGINT NOT NULL,
     account_id      BIGINT NOT NULL,
     version         BIGINT,
@@ -65,7 +65,7 @@ INSERT INTO clients (id, login, name, surname, patronymic, phone_number, birthda
 values (1000000001, 'kozlovda', 'dima', 'kozlov' , 'andreevich', '89993124527', '1991-02-25', 1111989989, 'somemail@mail.ru');
 
 INSERT INTO accounts (id, account_number, currency, client_id)
-values (1000000001, '222222222222222222222', 'RUB', 1000000001);
+values (1000000001, '22222222222222222222', 'RUB', 1000000001);
 
 INSERT INTO cards ( card_number, client_id, account_id)
 values ('4222422242224222', 1000000001, 1000000001);

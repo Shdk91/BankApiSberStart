@@ -60,7 +60,8 @@ public class ClientDaoImpl implements ClientDao {
         try {
             return client.getAccountList();
         } catch (NoResultException e) {
-            return null;
+            String message = login + " у данного клиента нет счетов";
+            throw new NoSuchClientException(message);
         } catch (Exception exp){
             throw new UnknownSQLException("попробуйте позже");
         }
@@ -72,7 +73,8 @@ public class ClientDaoImpl implements ClientDao {
         try {
             return client.getCards();
         } catch (NoResultException e) {
-            return null;
+            String message = login + " у данного клиента нет карт";
+            throw new NoSuchClientException(message);
         } catch (Exception exp) {
             throw new UnknownSQLException("попробуйте позже");
         }

@@ -1,6 +1,7 @@
 package com.example.bankapisberstart.controller;
 
 import com.example.bankapisberstart.dao.ClientDaoImpl;
+import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
 import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
 import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.output_dto.CardOutDto;
@@ -36,8 +37,9 @@ public class ClientApiController {
     }
 
     @GetMapping("/getBalance")
-    public Long getBalance(){
-        return null;
+    public String getBalance(@Valid @ModelAttribute GetBalanceDto param){
+
+        return clientService.getBalance(param);
     }
 
     @PostMapping("/addCash")
