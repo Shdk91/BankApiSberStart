@@ -2,7 +2,6 @@ CREATE TABLE clients
 (
     id              BIGINT NOT NULL UNIQUE,
     login           VARCHAR(255) NOT NULL UNIQUE,
-    password        VARCHAR(255) NOT NULL,
     name            VARCHAR(255) NOT NULL,
     surname         VARCHAR(255) NOT NULL,
     patronymic      VARCHAR(255) NOT NULL,
@@ -53,8 +52,17 @@ CREATE TABLE transactions
     FOREIGN  KEY (account_id) references accounts(id)
 );
 
-INSERT INTO clients (id, login, password, name, surname, patronymic, phone_number, birthdate, passport_id, email)
-values (1000000001, 'kozlovda', '1111', 'dima', 'kozlov' , 'andreevich', '89993124527', '1991-02-25', 1111989989, 'somemail@mail.ru');
+CREATE INDEX client_login
+ON clients(login);
+
+CREATE INDEX account_client_id
+ON accounts(client_id);
+
+CREATE INDEX card_client_id
+ON cards(client_id);
+
+INSERT INTO clients (id, login, name, surname, patronymic, phone_number, birthdate, passport_id, email)
+values (1000000001, 'kozlovda', 'dima', 'kozlov' , 'andreevich', '89993124527', '1991-02-25', 1111989989, 'somemail@mail.ru');
 
 INSERT INTO accounts (id, account_number, currency, client_id)
 values (1000000001, '222222222222222222222', 'RUB', 1000000001);

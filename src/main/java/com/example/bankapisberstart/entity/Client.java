@@ -1,9 +1,11 @@
 package com.example.bankapisberstart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -47,10 +49,28 @@ public class Client {
     private Long passportId;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<BankAccount> accountList;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Card> cards;
+
+    public void addAccount(BankAccount account){
+        if (accountList == null) {
+            accountList = new ArrayList<>();
+        }
+        accountList.add(account);
+        account.setClient(this);
+    }
+
+    public void addCard(Card card){
+        if (cards == null) {
+            cards = new ArrayList<>();
+        }
+        cards.add(card);
+        card.setClient(this);
+    }
 
     @Override
     public String toString() {
