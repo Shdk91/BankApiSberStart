@@ -6,6 +6,7 @@ import lombok.Setter;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,25 +19,31 @@ public class BankAccount {
     private Long version;
 
     @Id
-    @Column
+    @Column(name = "id")
     private Long Id;
 
     @Column(name = "account_number")
     private String number;
 
-    @Column
+    @Column(name = "currency")
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @Column
+    @Column(name = "balance")
     private Long balance;
 
-    @Column
+    @Column(name = "isactive")
     private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany(mappedBy = "bankAccount")
+    private List<Card> cards;
+
+    @OneToMany(mappedBy = "bankAccount")
+    private List<Transaction> transactions;
 
     @Override
     public String toString() {

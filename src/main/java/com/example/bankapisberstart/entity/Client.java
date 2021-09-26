@@ -49,6 +49,9 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<BankAccount> accountList;
 
+    @OneToMany(mappedBy = "client")
+    private List<Card> cards;
+
     @Override
     public String toString() {
         return "Client{" +

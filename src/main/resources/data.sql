@@ -21,10 +21,36 @@ CREATE TABLE accounts
     currency        VARCHAR (255) NOT NULL,
     balance         BIGINT NOT NULL DEFAULT 0  CHECK (balance > 0 OR balance = 0),
     client_id       BIGINT NOT NULL,
-    isActive        BIT(1) NOT NULL DEFAULT true,
+    isactive        BIT(1) NOT NULL DEFAULT true,
     version         BIGINT,
     primary key (id),
     foreign key (client_id) REFERENCES clients(id)
+);
+
+CREATE TABLE cards
+(
+    id              BIGINT NOT NULL AUTO_INCREMENT,
+    isactive        BIT(1) NOT NULL DEFAULT true,
+    number_card     VARCHAR (16) NOT NULL UNIQUE,
+    client_id       BIGINT NOT NULL,
+    account_id      BIGINT NOT NULL,
+    version         BIGINT,
+    primary key (id),
+    foreign key (client_id) references clients(id),
+    foreign key (account_id) references accounts(id)
+);
+
+CREATE TABLE transactions
+(
+    id                      BIGINT NOT NULL AUTO_INCREMENT,
+    account_id              BIGINT NOT NULL,
+    counterparty_account    VARCHAR (255),
+    is_plus                 BIT(1) NOT NULL,
+    time_of_transact        TIMESTAMP NOT NULL,
+    transaction_type        VARCHAR (255) NOT NULL,
+    version                 BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN  KEY (account_id) references accounts(id)
 );
 
 INSERT INTO clients (id, login, password, name, surname, patronymic, phone_number, birthdate, passport_id, email)
@@ -32,3 +58,6 @@ values (1000000001, 'kozlovda', '1111', 'dima', 'kozlov' , 'andreevich', '899931
 
 INSERT INTO accounts (id, account_number, currency, client_id)
 values (1000000001, '222222222222222222222', 'RUB', 1000000001);
+
+INSERT INTO cards ( number_card, client_id, account_id)
+values ('4222422242224222', 1000000001, 1000000001);
