@@ -25,9 +25,6 @@ public class Client {
     private String login;
 
     @Column
-    private char[] password;
-
-    @Column
     private String name;
 
     @Column

@@ -2,6 +2,8 @@ package com.example.bankapisberstart.controller;
 
 import com.example.bankapisberstart.dao.ClientDaoImpl;
 import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
+import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
+import com.example.bankapisberstart.dto.output_dto.CardOutDto;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Client;
@@ -24,15 +26,13 @@ public class ClientApiController {
     private ClientService clientService;
 
     @GetMapping("/getAccounts")
-    public List<BankAccount> getAccountList(@Valid @ModelAttribute GetCardsOrAccountsDto param){
-        log.info("1111");
+    public List<BankAccountOutDTO> getAccountList(@Valid @ModelAttribute GetCardsOrAccountsDto param){
         return clientService.getAccountList(param);
     }
 
     @GetMapping("/getCards")
-    public List<Card> getCardList(){
-
-        return null;
+    public List<CardOutDto> getCardList(@Valid @ModelAttribute GetCardsOrAccountsDto param){
+        return clientService.getCardList(param);
     }
 
     @GetMapping("/getBalance")

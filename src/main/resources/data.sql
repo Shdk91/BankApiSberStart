@@ -30,7 +30,7 @@ CREATE TABLE cards
 (
     id              BIGINT NOT NULL AUTO_INCREMENT,
     isactive        BIT(1) NOT NULL DEFAULT true,
-    number_card     VARCHAR (16) NOT NULL UNIQUE,
+    card_number          VARCHAR (16) NOT NULL UNIQUE,
     client_id       BIGINT NOT NULL,
     account_id      BIGINT NOT NULL,
     version         BIGINT,
@@ -67,5 +67,5 @@ values (1000000001, 'kozlovda', 'dima', 'kozlov' , 'andreevich', '89993124527', 
 INSERT INTO accounts (id, account_number, currency, client_id)
 values (1000000001, '222222222222222222222', 'RUB', 1000000001);
 
-INSERT INTO cards ( number_card, client_id, account_id)
+INSERT INTO cards ( card_number, client_id, account_id)
 values ('4222422242224222', 1000000001, 1000000001);

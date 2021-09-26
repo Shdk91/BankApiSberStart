@@ -1,5 +1,6 @@
 package com.example.bankapisberstart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class Card {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "number")
+    @Column(name = "card_number")
     private String number;
 
     @Column(name = "isactive")
@@ -31,9 +32,11 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private BankAccount bankAccount;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonIgnore
     private Client client;
 }

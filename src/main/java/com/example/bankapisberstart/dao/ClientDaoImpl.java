@@ -1,6 +1,7 @@
 package com.example.bankapisberstart.dao;
 
 import com.example.bankapisberstart.entity.BankAccount;
+import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Client;
 import com.example.bankapisberstart.exception_handling.NoSuchClientException;
 import com.example.bankapisberstart.exception_handling.UnknownSQLException;
@@ -46,9 +47,9 @@ public class ClientDaoImpl implements ClientDao {
                     .getSingleResult();
             return client;
         } catch (NoResultException e) {
-            return null;
+            String message = login + " клиент с таким логином не найден в базе данных!";
+            throw new NoSuchClientException(message);
         } catch (Exception exp){
-            log.warn(exp.getMessage());
             throw new UnknownSQLException("попробуйте позже");
         }
     }
@@ -56,20 +57,25 @@ public class ClientDaoImpl implements ClientDao {
     @Override
     public List<BankAccount> getAccountListFromClient(String login) {
         Client client = findClientFromLogin(login);
-        if (client == null) {
-            String message = login + " клиент с таким логином не найден в базе данных!";
-            log.info(message);
-            throw new NoSuchClientException(message);
-        }
         try {
             return client.getAccountList();
         } catch (NoResultException e) {
             return null;
         } catch (Exception exp){
-            log.warn(exp.getMessage());
             throw new UnknownSQLException("попробуйте позже");
         }
     }
 
+    @Override
+    public List<Card> getCardsListFromClientLogin(String login) {
+        Client client = findClientFromLogin(login);
+        try {
+            return client.getCards();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception exp) {
+            throw new UnknownSQLException("попробуйте позже");
+        }
+    }
 
 }
