@@ -47,11 +47,11 @@ public class Client {
     @Column(name = "passport_id")
     private Long passportId;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     @JsonIgnore
     private List<BankAccount> accountList;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     @JsonIgnore
     private List<Card> cards;
 

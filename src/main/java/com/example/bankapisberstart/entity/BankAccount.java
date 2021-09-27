@@ -36,16 +36,16 @@ public class BankAccount {
     @Column(name = "isactive")
     private boolean isActive;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id")
     @JsonIgnore
     private Client client;
 
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bankAccount")
     @JsonIgnore
     private List<Card> cards;
 
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "bankAccount")
     @JsonIgnore
     private List<Transaction> transactions;
 

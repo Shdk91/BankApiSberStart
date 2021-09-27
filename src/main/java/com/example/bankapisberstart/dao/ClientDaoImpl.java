@@ -21,24 +21,6 @@ public class ClientDaoImpl implements ClientDao {
     private EntityManager entityManager;
 
 
-    public void saveClient(Client client) {
-        entityManager.persist(client);
-    }
-
-
-    public List<Client> getAllClients() {
-        return (List<Client>) entityManager
-                .createQuery("SELECT client from Client client").getResultList();
-    }
-
-    public Client getClientByName(String name) {
-        System.out.println(1);
-        List<Client> client = entityManager
-                .createQuery("from Client client where client.name = '" + name + "'").getResultList();
-        System.out.println(client);
-        return client.get(0);
-    }
-
     @Override
     public Client findClientFromLogin(String login) {
         try {

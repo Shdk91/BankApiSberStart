@@ -30,12 +30,12 @@ public class Card {
     @Column(name = "isactive")
     private boolean isActive;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     @JsonIgnore
     private BankAccount bankAccount;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id")
     @JsonIgnore
     private Client client;

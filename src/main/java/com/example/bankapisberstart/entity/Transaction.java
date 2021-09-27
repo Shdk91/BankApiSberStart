@@ -1,5 +1,6 @@
 package com.example.bankapisberstart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,8 +36,12 @@ public class Transaction {
     @Column(name = "time_of_transact")
     private LocalDateTime time;
 
+    @Column(name = "sum")
+    private Long sum;
+
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private BankAccount bankAccount;
 
 }

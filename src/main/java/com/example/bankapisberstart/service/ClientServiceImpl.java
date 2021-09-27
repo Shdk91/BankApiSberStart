@@ -1,7 +1,9 @@
 package com.example.bankapisberstart.service;
 
+import com.example.bankapisberstart.dao.BankAccountDao;
 import com.example.bankapisberstart.dao.CardDao;
 import com.example.bankapisberstart.dao.ClientDao;
+import com.example.bankapisberstart.dto.input_dto.AddCashDto;
 import com.example.bankapisberstart.dto.input_dto.CreateCardDto;
 import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
 import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
@@ -9,6 +11,8 @@ import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.output_dto.CardOutDto;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
+import com.example.bankapisberstart.entity.Transaction;
+import com.example.bankapisberstart.entity.TransactionType;
 import com.example.bankapisberstart.exception_handling.NoSuchClientException;
 import com.example.bankapisberstart.utils.BalanceConverter;
 import com.example.bankapisberstart.utils.NumberGenerator;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +35,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private CardDao cardDao;
+
+    @Autowired
+    private BankAccountDao bankAccountDao;
 
 
     /**
@@ -164,6 +172,49 @@ public class ClientServiceImpl implements ClientService {
         cardDao.createCard(card);
 
         return card;
+    }
+
+    @Override
+    @Transactional
+    public void addCash(AddCashDto requestBody) {
+        String login = requestBody.getLogin();
+        String number = requestBody.getNumber();
+        Long sum = requestBody.getSum();
+
+        log.info(login + number + sum);
+
+        BankAccount bankAccount;
+
+        if (number.length() == 16) {
+            log.info(login + "хочет внести деньги на карту" + number);
+            bankAccount = checkCard(login, number).getBankAccount();
+        } else if (number.length() == 20) {
+            log.info(login + "хочет внести деньги на счет" + number);
+            bankAccount = checkBankAccount(login, number);
+        } else {
+            String message = login + " не валидный номер карты или счета";
+            throw new NoSuchClientException(message);
+        }
+
+        log.info("create trans");
+        Transaction transaction = new Transaction();
+        transaction.setBankAccount(bankAccount);
+        transaction.setTransactionType(TransactionType.CASH);
+        transaction.setPlus(true);
+        transaction.setTime(LocalDateTime.now());
+        transaction.setSum(sum);
+
+        log.info("add trans in list");
+        bankAccount.addTransaction(transaction);
+
+        log.info("изменение баланса");
+        Long currentBalance = bankAccount.getBalance();
+        Long newBalance = currentBalance + sum;
+        bankAccount.setBalance(newBalance);
+
+        log.info("сохранение изменений " + newBalance);
+        bankAccountDao.updateAccount(bankAccount);
+        log.info("сохранения изменены");
     }
 
     private BankAccount checkBankAccount(String login, String number) {

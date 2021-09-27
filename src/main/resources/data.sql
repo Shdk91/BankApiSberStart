@@ -9,7 +9,7 @@ CREATE TABLE clients
     birthdate       date NOT NULL,
     passport_id     BIGINT NOT NULL UNIQUE,
     email           VARCHAR(255) NOT NULL UNIQUE,
-    version         BIGINT,
+    version         BIGINT not null default 0,
     primary key (id)
 );
 
@@ -21,7 +21,7 @@ CREATE TABLE accounts
     balance         BIGINT NOT NULL DEFAULT 0  CHECK (balance > 0 OR balance = 0),
     client_id       BIGINT NOT NULL,
     isactive        BIT(1) NOT NULL DEFAULT true,
-    version         BIGINT,
+    version         BIGINT not null default 0,
     primary key (id),
     foreign key (client_id) REFERENCES clients(id)
 );
@@ -33,7 +33,7 @@ CREATE TABLE cards
     card_number     VARCHAR (16) NOT NULL UNIQUE,
     client_id       BIGINT NOT NULL,
     account_id      BIGINT NOT NULL,
-    version         BIGINT,
+    version         BIGINT not null default 0,
     primary key (id),
     foreign key (client_id) references clients(id),
     foreign key (account_id) references accounts(id)
@@ -43,11 +43,12 @@ CREATE TABLE transactions
 (
     id                      BIGINT NOT NULL AUTO_INCREMENT,
     account_id              BIGINT NOT NULL,
-    counterparty_account    VARCHAR (255),
+    counterparty_account    VARCHAR (255) default null,
     is_plus                 BIT(1) NOT NULL,
     time_of_transact        TIMESTAMP NOT NULL,
     transaction_type        VARCHAR (255) NOT NULL,
-    version                 BIGINT,
+    sum                     BIGINT NOT NULL CHECK (sum > 0 OR sum = 0),
+    version                 BIGINT not null default 0,
     PRIMARY KEY (id),
     FOREIGN  KEY (account_id) references accounts(id)
 );

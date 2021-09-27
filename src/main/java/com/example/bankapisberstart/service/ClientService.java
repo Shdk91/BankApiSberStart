@@ -1,5 +1,6 @@
 package com.example.bankapisberstart.service;
 
+import com.example.bankapisberstart.dto.input_dto.AddCashDto;
 import com.example.bankapisberstart.dto.input_dto.CreateCardDto;
 import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
 import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
@@ -20,5 +21,7 @@ public interface ClientService {
     String getBalance(GetBalanceDto param);
 
     Card createCard(CreateCardDto requestBody);
+
+    void addCash(AddCashDto requestBody);
 }
 
