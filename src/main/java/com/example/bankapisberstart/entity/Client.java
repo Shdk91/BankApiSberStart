@@ -1,7 +1,9 @@
 package com.example.bankapisberstart.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -53,7 +55,7 @@ public class Client {
     @JsonIgnore
     private List<Card> cards;
 
-    public void addAccount(BankAccount account){
+    public void addAccount(BankAccount account) {
         if (accountList == null) {
             accountList = new ArrayList<>();
         }
@@ -61,7 +63,7 @@ public class Client {
         account.setClient(this);
     }
 
-    public void addCard(Card card){
+    public void addCard(Card card) {
         if (cards == null) {
             cards = new ArrayList<>();
         }

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +49,8 @@ public class BankAccount {
     @JsonIgnore
     private List<Transaction> transactions;
 
-    public void addCard(Card card){
-        if (cards == null){
+    public void addCard(Card card) {
+        if (cards == null) {
             cards = new ArrayList<>();
         }
         cards.add(card);
