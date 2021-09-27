@@ -140,6 +140,7 @@ public class ClientServiceImpl implements ClientService {
     /**
      * Получает параметры из тела запроса. Проверяет валидность счета. Генерирует новый номер карты,
      * проверяет его на уникальность. Создает карту.
+     *
      * @param requestBody - параметры из тела Post запроса
      * @return created card
      */
@@ -174,6 +175,12 @@ public class ClientServiceImpl implements ClientService {
         return card;
     }
 
+    /**
+     * Метод принимает данные из тела запроса получает клиента. Проверяет наличие активного счета/карты.
+     * Создает транзакцию, меняет баланс счета и сохраняет все изменения в бд.
+     * В случае ошибки в данных запроса будет выброшен NoSuchClientException
+     *  @param requestBody - параметры из тела Post запроса
+     */
     @Override
     @Transactional
     public void addCash(AddCashDto requestBody) {
@@ -196,7 +203,7 @@ public class ClientServiceImpl implements ClientService {
             throw new NoSuchClientException(message);
         }
 
-        log.info("create trans");
+        log.info(login + "Создание банковской транзакции");
         Transaction transaction = new Transaction();
         transaction.setBankAccount(bankAccount);
         transaction.setTransactionType(TransactionType.CASH);
@@ -204,17 +211,14 @@ public class ClientServiceImpl implements ClientService {
         transaction.setTime(LocalDateTime.now());
         transaction.setSum(sum);
 
-        log.info("add trans in list");
         bankAccount.addTransaction(transaction);
 
-        log.info("изменение баланса");
+        log.info(login + " изменение баланса счета: " + number);
         Long currentBalance = bankAccount.getBalance();
         Long newBalance = currentBalance + sum;
         bankAccount.setBalance(newBalance);
 
-        log.info("сохранение изменений " + newBalance);
         bankAccountDao.updateAccount(bankAccount);
-        log.info("сохранения изменены");
     }
 
     private BankAccount checkBankAccount(String login, String number) {

@@ -25,4 +25,12 @@ public class ClientApiExceptionHandler {
         return new ResponseEntity<>(clientIncorrectData, HttpStatus.LOCKED);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(IdempotencyException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.LOCKED);
+    }
+
 }

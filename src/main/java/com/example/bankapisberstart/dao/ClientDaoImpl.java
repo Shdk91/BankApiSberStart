@@ -32,6 +32,7 @@ public class ClientDaoImpl implements ClientDao {
             String message = login + " клиент с таким логином не найден в базе данных!";
             throw new NoSuchClientException(message);
         } catch (Exception exp) {
+            log.warn(login + " " + exp.getMessage());
             throw new UnknownSQLException("попробуйте позже");
         }
     }
@@ -45,6 +46,7 @@ public class ClientDaoImpl implements ClientDao {
             String message = login + " у данного клиента нет счетов";
             throw new NoSuchClientException(message);
         } catch (Exception exp) {
+            log.warn(login + " " + exp.getMessage());
             throw new UnknownSQLException("попробуйте позже");
         }
     }
@@ -58,6 +60,7 @@ public class ClientDaoImpl implements ClientDao {
             String message = login + " у данного клиента нет карт";
             throw new NoSuchClientException(message);
         } catch (Exception exp) {
+            log.warn(login + " " + exp.getMessage());
             throw new UnknownSQLException("попробуйте позже");
         }
     }

@@ -1,7 +1,6 @@
 package com.example.bankapisberstart.dao;
 
 import com.example.bankapisberstart.entity.BankAccount;
-import com.example.bankapisberstart.exception_handling.NoSuchClientException;
 import com.example.bankapisberstart.exception_handling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import javax.persistence.EntityManager;
 
 @Repository
 @Slf4j
-public class BankAccountDaoImpl implements BankAccountDao{
+public class BankAccountDaoImpl implements BankAccountDao {
 
     @Autowired
     private EntityManager entityManager;
