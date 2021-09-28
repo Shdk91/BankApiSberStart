@@ -1,6 +1,5 @@
 package com.example.bankapisberstart.cache;
 
-import com.example.bankapisberstart.dto.input_dto.AddCashDto;
 import com.example.bankapisberstart.dto.input_dto.CreateCardDto;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class CreateCardRequestCacheImpl implements  RequestCache<CreateCardDto>{
+public class CreateCardRequestCacheImpl implements RequestCache<CreateCardDto> {
 
     private Map<CreateCardDto, LocalDateTime> map = new ConcurrentHashMap<>();
 

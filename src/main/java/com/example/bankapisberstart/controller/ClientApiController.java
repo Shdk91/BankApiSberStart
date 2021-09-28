@@ -55,7 +55,7 @@ public class ClientApiController {
 
     @PostMapping("/addCash")
     public ResponseEntity<String> addCash(@Valid @RequestBody AddCashDto requestBody) {
-        if (addCashRequestCache.checkRequest(requestBody)){
+        if (addCashRequestCache.checkRequest(requestBody)) {
             throw new IdempotencyException("Слишком много однотипных запросов");
         }
 
@@ -72,7 +72,7 @@ public class ClientApiController {
 
     @PostMapping("/createCard")
     public ResponseEntity<String> createCard(@Valid @RequestBody CreateCardDto requestBody) {
-        if (cardRequestCache.checkRequest(requestBody)){
+        if (cardRequestCache.checkRequest(requestBody)) {
             throw new IdempotencyException("Слишком много однотипных запросов");
         }
 

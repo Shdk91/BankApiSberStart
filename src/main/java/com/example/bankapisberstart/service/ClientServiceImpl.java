@@ -179,7 +179,8 @@ public class ClientServiceImpl implements ClientService {
      * Метод принимает данные из тела запроса получает клиента. Проверяет наличие активного счета/карты.
      * Создает транзакцию, меняет баланс счета и сохраняет все изменения в бд.
      * В случае ошибки в данных запроса будет выброшен NoSuchClientException
-     *  @param requestBody - параметры из тела Post запроса
+     *
+     * @param requestBody - параметры из тела Post запроса
      */
     @Override
     @Transactional
