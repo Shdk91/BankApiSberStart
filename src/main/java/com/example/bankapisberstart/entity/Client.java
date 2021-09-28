@@ -55,6 +55,19 @@ public class Client {
     @JsonIgnore
     private List<Card> cards;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+            CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "counterparty_id")
+    @JsonIgnore
+    private List<Counterparty> counterparties;
+
+    public void addCounterParty(Counterparty counterparty) {
+        if (counterparties == null) {
+            counterparties = new ArrayList<>();
+        }
+        counterparties.add(counterparty);
+    }
+
     public void addAccount(BankAccount account) {
         if (accountList == null) {
             accountList = new ArrayList<>();

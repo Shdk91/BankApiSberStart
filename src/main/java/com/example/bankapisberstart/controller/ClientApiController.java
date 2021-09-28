@@ -2,16 +2,17 @@ package com.example.bankapisberstart.controller;
 
 import com.example.bankapisberstart.cache.AddCashRequestCacheImpl;
 import com.example.bankapisberstart.cache.CreateCardRequestCacheImpl;
-import com.example.bankapisberstart.dto.input_dto.AddCashDto;
-import com.example.bankapisberstart.dto.input_dto.CreateCardDto;
-import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
-import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
-import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
-import com.example.bankapisberstart.dto.output_dto.CardOutDto;
+import com.example.bankapisberstart.dto.inputdto.AddCashDto;
+import com.example.bankapisberstart.dto.inputdto.CreateCardDto;
+import com.example.bankapisberstart.dto.inputdto.GetBalanceDto;
+import com.example.bankapisberstart.dto.inputdto.GetCardsOrAccountsDto;
+import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
+import com.example.bankapisberstart.dto.outputdto.CardOutDto;
 import com.example.bankapisberstart.entity.Card;
-import com.example.bankapisberstart.exception_handling.IdempotencyException;
+import com.example.bankapisberstart.exceptionhandling.IdempotencyException;
 import com.example.bankapisberstart.service.ClientService;
-import com.example.bankapisberstart.utils.BalanceConverter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,36 +25,53 @@ import java.util.List;
 @RestController
 @RequestMapping("/clientApi")
 @Slf4j
+@Tag(name = "Клиенты", description = "Позволяет физическим лицам работать со своими счетами")
 public class ClientApiController {
 
-    @Autowired
-    private ClientService clientService;
+    private final ClientService clientService;
+
+    private final AddCashRequestCacheImpl addCashRequestCache;
+
+    private final CreateCardRequestCacheImpl cardRequestCache;
 
     @Autowired
-    private AddCashRequestCacheImpl addCashRequestCache;
-
-    @Autowired
-    private CreateCardRequestCacheImpl cardRequestCache;
+    public ClientApiController(ClientService clientService, AddCashRequestCacheImpl addCashRequestCache, CreateCardRequestCacheImpl cardRequestCache) {
+        this.clientService = clientService;
+        this.addCashRequestCache = addCashRequestCache;
+        this.cardRequestCache = cardRequestCache;
+    }
 
     @GetMapping("/getAccounts")
+    @Operation(
+            summary = "Получение списка счетов",
+            description = "Позволяет клиентам получить список счетов")
     public List<BankAccountOutDTO> getAccountList(@Valid @ModelAttribute GetCardsOrAccountsDto param) {
 
         return clientService.getAccountList(param);
     }
 
     @GetMapping("/getCards")
+    @Operation(
+            summary = "Получение списка карт",
+            description = "Позволяет клиентам получить список карт")
     public List<CardOutDto> getCardList(@Valid @ModelAttribute GetCardsOrAccountsDto param) {
 
         return clientService.getCardList(param);
     }
 
     @GetMapping("/getBalance")
+    @Operation(
+            summary = "Получение баланса по карте/счету",
+            description = "Позволяет клиентам баланс по номеру карты/счета")
     public String getBalance(@Valid @ModelAttribute GetBalanceDto param) {
 
         return clientService.getBalance(param);
     }
 
     @PostMapping("/addCash")
+    @Operation(
+            summary = "Внесение средств",
+            description = "Позволяет клиентам внести средства на счет или карту по номеру")
     public ResponseEntity<String> addCash(@Valid @RequestBody AddCashDto requestBody) {
         if (addCashRequestCache.checkRequest(requestBody)) {
             throw new IdempotencyException("Слишком много однотипных запросов");
@@ -64,13 +82,16 @@ public class ClientApiController {
 
         StringBuilder message = new StringBuilder()
                 .append(requestBody.getLogin()).append(" ")
-                .append(BalanceConverter.convertBalanceFromOutDto(requestBody.getSum()))
+                .append(requestBody.getSum().toString())
                 .append(" зачислено на ").append(requestBody.getNumber());
 
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 
     @PostMapping("/createCard")
+    @Operation(
+            summary = "Создание новой карты",
+            description = "Создание новой карты привязанной к определенному счету")
     public ResponseEntity<String> createCard(@Valid @RequestBody CreateCardDto requestBody) {
         if (cardRequestCache.checkRequest(requestBody)) {
             throw new IdempotencyException("Слишком много однотипных запросов");

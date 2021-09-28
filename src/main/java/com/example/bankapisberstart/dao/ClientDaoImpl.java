@@ -3,10 +3,9 @@ package com.example.bankapisberstart.dao;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Client;
-import com.example.bankapisberstart.exception_handling.NoSuchClientException;
-import com.example.bankapisberstart.exception_handling.UnknownSQLException;
+import com.example.bankapisberstart.exceptionhandling.NoSuchClientException;
+import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,8 +16,11 @@ import java.util.List;
 @Slf4j
 public class ClientDaoImpl implements ClientDao {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public ClientDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
 
     @Override

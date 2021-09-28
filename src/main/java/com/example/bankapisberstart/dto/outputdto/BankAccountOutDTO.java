@@ -1,8 +1,7 @@
-package com.example.bankapisberstart.dto.output_dto;
+package com.example.bankapisberstart.dto.outputdto;
 
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Currency;
-import com.example.bankapisberstart.utils.BalanceConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,7 +27,7 @@ public class BankAccountOutDTO {
         bankAccountOutDTO.setId(bankAccount.getId());
         bankAccountOutDTO.setNumber(bankAccount.getNumber());
         bankAccountOutDTO.setCurrency(bankAccount.getCurrency());
-        bankAccountOutDTO.setBalance(BalanceConverter.convertBalanceFromOutDto(bankAccount.getBalance()));
+        bankAccountOutDTO.setBalance(bankAccount.getBalance().toString());
         return bankAccountOutDTO;
     }
 

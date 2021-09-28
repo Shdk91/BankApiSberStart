@@ -23,18 +23,20 @@ public class AddCashIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void AddCashWithNormalData() throws Exception {
+    public void addCashWithNormalData() throws Exception {
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
                 mockMvc
                         .perform(post("/clientApi/addCash")
-                                .contentType(MediaType.APPLICATION_JSON).content(TestHelper.ADD_CASH_NORMAL))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(TestHelper.ADD_CASH_NORMAL))
                         .andDo(print())
                         .andExpect(status().isOk());
             } else {
                 mockMvc
                         .perform(post("/clientApi/addCash")
-                                .contentType(MediaType.APPLICATION_JSON).content(TestHelper.ADD_CASH_NORMAL))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(TestHelper.ADD_CASH_NORMAL))
                         .andDo(print())
                         .andExpect(status().is4xxClientError());
             }
@@ -42,25 +44,27 @@ public class AddCashIntegrationTest {
     }
 
     @Test
-    public void AddCashFalseName() throws Exception {
+    public void addCashFalseName() throws Exception {
         mockMvc
                 .perform(post("/clientApi/addCash")
-                        .contentType(MediaType.APPLICATION_JSON).content(TestHelper.ADD_CASH_FALSE_NAME))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.ADD_CASH_FALSE_NAME))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void AddCashWithFalseNumber() throws Exception {
+    public void addCashWithFalseNumber() throws Exception {
         mockMvc
                 .perform(post("/clientApi/addCash")
-                        .contentType(MediaType.APPLICATION_JSON).content(TestHelper.ADD_CASH_FALSE_NUMBER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.ADD_CASH_FALSE_NUMBER))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void AddCashWithEmptyBody() throws Exception {
+    public void addCashWithEmptyBody() throws Exception {
         mockMvc
                 .perform(post("/clientApi/addCash")
                         .contentType(MediaType.APPLICATION_JSON).content("{}"))

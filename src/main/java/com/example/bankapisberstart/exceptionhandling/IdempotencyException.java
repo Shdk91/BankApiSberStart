@@ -1,4 +1,4 @@
-package com.example.bankapisberstart.exception_handling;
+package com.example.bankapisberstart.exceptionhandling;
 
 public class IdempotencyException extends RuntimeException {
 

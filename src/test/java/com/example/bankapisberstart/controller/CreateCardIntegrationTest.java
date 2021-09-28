@@ -28,13 +28,15 @@ public class CreateCardIntegrationTest {
             if (i == 0) {
                 mockMvc
                         .perform(post("/clientApi/createCard")
-                                .contentType(MediaType.APPLICATION_JSON).content(TestHelper.CREATE_CARD_NORMAL))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(TestHelper.CREATE_CARD_NORMAL))
                         .andDo(print())
                         .andExpect(status().isOk());
             } else {
                 mockMvc
                         .perform(post("/clientApi/createCard")
-                                .contentType(MediaType.APPLICATION_JSON).content(TestHelper.CREATE_CARD_NORMAL))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(TestHelper.CREATE_CARD_NORMAL))
                         .andDo(print())
                         .andExpect(status().is4xxClientError());
             }
@@ -45,7 +47,8 @@ public class CreateCardIntegrationTest {
     public void createCardWithFalseName() throws Exception {
         mockMvc
                 .perform(post("/clientApi/createCard")
-                        .contentType(MediaType.APPLICATION_JSON).content(TestHelper.CREATE_CARD_FALSE_NAME))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.CREATE_CARD_FALSE_NAME))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -54,7 +57,8 @@ public class CreateCardIntegrationTest {
     public void createCardWithFalseNumber() throws Exception {
         mockMvc
                 .perform(post("/clientApi/createCard")
-                        .contentType(MediaType.APPLICATION_JSON).content(TestHelper.CREATE_CARD_FALSE_NUMBER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestHelper.CREATE_CARD_FALSE_NUMBER))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }

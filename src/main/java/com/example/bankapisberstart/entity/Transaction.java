@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -37,7 +38,7 @@ public class Transaction {
     private LocalDateTime time;
 
     @Column(name = "sum")
-    private Long sum;
+    private BigDecimal sum;
 
     @ManyToOne
     @JoinColumn(name = "account_id")

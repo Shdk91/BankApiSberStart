@@ -1,9 +1,8 @@
 package com.example.bankapisberstart.dao;
 
 import com.example.bankapisberstart.entity.Card;
-import com.example.bankapisberstart.exception_handling.UnknownSQLException;
+import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,8 +11,11 @@ import javax.persistence.EntityManager;
 @Slf4j
 public class CardDaoImpl implements CardDao {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public CardDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Card findCardByNumber(String cardNumber) {

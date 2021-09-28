@@ -1,4 +1,4 @@
-package com.example.bankapisberstart.dto.input_dto;
+package com.example.bankapisberstart.dto.inputdto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

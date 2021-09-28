@@ -3,24 +3,24 @@ package com.example.bankapisberstart.service;
 import com.example.bankapisberstart.dao.BankAccountDao;
 import com.example.bankapisberstart.dao.CardDao;
 import com.example.bankapisberstart.dao.ClientDao;
-import com.example.bankapisberstart.dto.input_dto.AddCashDto;
-import com.example.bankapisberstart.dto.input_dto.CreateCardDto;
-import com.example.bankapisberstart.dto.input_dto.GetBalanceDto;
-import com.example.bankapisberstart.dto.input_dto.GetCardsOrAccountsDto;
-import com.example.bankapisberstart.dto.output_dto.BankAccountOutDTO;
-import com.example.bankapisberstart.dto.output_dto.CardOutDto;
+import com.example.bankapisberstart.dto.inputdto.AddCashDto;
+import com.example.bankapisberstart.dto.inputdto.CreateCardDto;
+import com.example.bankapisberstart.dto.inputdto.GetBalanceDto;
+import com.example.bankapisberstart.dto.inputdto.GetCardsOrAccountsDto;
+import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
+import com.example.bankapisberstart.dto.outputdto.CardOutDto;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Transaction;
 import com.example.bankapisberstart.entity.TransactionType;
-import com.example.bankapisberstart.exception_handling.NoSuchClientException;
-import com.example.bankapisberstart.utils.BalanceConverter;
+import com.example.bankapisberstart.exceptionhandling.NoSuchClientException;
 import com.example.bankapisberstart.utils.NumberGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +30,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientDao clientDao;
+    private final ClientDao clientDao;
+
+    private final CardDao cardDao;
+
+    private final BankAccountDao bankAccountDao;
 
     @Autowired
-    private CardDao cardDao;
-
-    @Autowired
-    private BankAccountDao bankAccountDao;
+    public ClientServiceImpl(ClientDao clientDao, CardDao cardDao, BankAccountDao bankAccountDao) {
+        this.clientDao = clientDao;
+        this.cardDao = cardDao;
+        this.bankAccountDao = bankAccountDao;
+    }
 
 
     /**
@@ -48,11 +52,11 @@ public class ClientServiceImpl implements ClientService {
      * @return bankAccountOutDTOList
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BankAccountOutDTO> getAccountList(GetCardsOrAccountsDto requestParam) {
         String login = requestParam.getLogin();
 
-        log.info(login + " запрашивает список счетов!");
+        log.debug(login + " запрашивает список счетов!");
 
         List<BankAccount> bankAccounts = clientDao.getAccountListFromClient(login);
         bankAccounts = bankAccounts.stream()
@@ -69,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
             bankAccountOutDTOList.add(BankAccountOutDTO.generateBankAccountOutDTO(bankAccount));
         }
 
-        log.info(login + " отправлен список счетов");
+        log.debug(login + " отправлен список счетов");
 
         return bankAccountOutDTOList;
     }
@@ -82,11 +86,11 @@ public class ClientServiceImpl implements ClientService {
      * @return CardOutDtoList
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CardOutDto> getCardList(GetCardsOrAccountsDto requestParam) {
         String login = requestParam.getLogin();
 
-        log.info(login + " запрашивает список карт");
+        log.debug(login + " запрашивает список карт");
 
         List<Card> cards = clientDao.getCardsListFromClientLogin(login);
         cards = cards.stream()
@@ -101,7 +105,7 @@ public class ClientServiceImpl implements ClientService {
         List<CardOutDto> cardOutDtoList = new ArrayList<>();
 
         for (Card card : cards) {
-            cardOutDtoList.add(CardOutDto.generatorCardOutDto(card));
+            cardOutDtoList.add(CardOutDto.generateCardOutDto(card));
         }
 
         return cardOutDtoList;
@@ -116,20 +120,20 @@ public class ClientServiceImpl implements ClientService {
      * @return balance
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public String getBalance(GetBalanceDto requestParam) {
         String login = requestParam.getLogin();
         String number = requestParam.getNumber();
 
         if (number.length() == 16) {
-            log.info(login + " запрашивает баланс по номеру карты " + number);
+            log.debug(login + " запрашивает баланс по номеру карты " + number);
             Card card = checkCard(login, number);
-            return BalanceConverter.convertBalanceFromOutDto(card.getBankAccount().getBalance());
+            return card.getBankAccount().getBalance().toString();
 
         } else if (number.length() == 20) {
-            log.info(login + " запрашивает баланс по номеру счета " + number);
+            log.debug(login + " запрашивает баланс по номеру счета " + number);
             BankAccount bankAccount = checkBankAccount(login, number);
-            return BalanceConverter.convertBalanceFromOutDto(bankAccount.getBalance());
+            return bankAccount.getBalance().toString();
 
         } else {
             String message = login + " запросил баланс с  не валидным номер карты или счета";
@@ -150,7 +154,7 @@ public class ClientServiceImpl implements ClientService {
         String login = requestBody.getLogin();
         String number = requestBody.getAccountNumber();
 
-        log.info(login + " запрашивает создание карты к счету " + number);
+        log.debug(login + " запрашивает создание карты к счету " + number);
 
         BankAccount bankAccount = checkBankAccount(login, number);
 
@@ -187,26 +191,25 @@ public class ClientServiceImpl implements ClientService {
     public void addCash(AddCashDto requestBody) {
         String login = requestBody.getLogin();
         String number = requestBody.getNumber();
-        Long sum = requestBody.getSum();
+        BigDecimal sum = requestBody.getSum();
 
-        log.info(login + number + sum);
+        log.debug(login + number + sum);
 
         BankAccount bankAccount;
 
         if (number.length() == 16) {
-            log.info(login + "хочет внести деньги на карту" + number);
+            log.debug(login + "хочет внести деньги на карту" + number);
             bankAccount = checkCard(login, number).getBankAccount();
         } else if (number.length() == 20) {
-            log.info(login + "хочет внести деньги на счет" + number);
+            log.debug(login + "хочет внести деньги на счет" + number);
             bankAccount = checkBankAccount(login, number);
         } else {
             String message = login + " не валидный номер карты или счета";
             throw new NoSuchClientException(message);
         }
 
-        log.info(login + "Создание банковской транзакции");
+        log.debug(login + "Создание банковской транзакции");
         Transaction transaction = new Transaction();
-        transaction.setBankAccount(bankAccount);
         transaction.setTransactionType(TransactionType.CASH);
         transaction.setPlus(true);
         transaction.setTime(LocalDateTime.now());
@@ -214,9 +217,9 @@ public class ClientServiceImpl implements ClientService {
 
         bankAccount.addTransaction(transaction);
 
-        log.info(login + " изменение баланса счета: " + number);
-        Long currentBalance = bankAccount.getBalance();
-        Long newBalance = currentBalance + sum;
+        log.debug(login + " изменение баланса счета: " + number);
+        BigDecimal currentBalance = bankAccount.getBalance();
+        BigDecimal newBalance = currentBalance.add(sum);
         bankAccount.setBalance(newBalance);
 
         bankAccountDao.updateAccount(bankAccount);

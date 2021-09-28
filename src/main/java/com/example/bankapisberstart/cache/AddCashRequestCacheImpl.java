@@ -1,6 +1,6 @@
 package com.example.bankapisberstart.cache;
 
-import com.example.bankapisberstart.dto.input_dto.AddCashDto;
+import com.example.bankapisberstart.dto.inputdto.AddCashDto;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
