@@ -14,7 +14,7 @@ public class ClientApiExceptionHandler {
         ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
         clientIncorrectData.setInfo(exception.getMessage());
 
-        return new ResponseEntity<>(clientIncorrectData, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
