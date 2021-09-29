@@ -4,10 +4,10 @@ import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Client;
 import com.example.bankapisberstart.entity.Counterparty;
+import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.NoSuchAccountException;
 import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.NoSuchCardException;
 import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.NoSuchClientException;
-import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 

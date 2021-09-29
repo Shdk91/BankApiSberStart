@@ -1,8 +1,8 @@
 package com.example.bankapisberstart.dao;
 
 import com.example.bankapisberstart.entity.Counterparty;
-import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.DuplicateCounterpartyException;
 import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
+import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.DuplicateCounterpartyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import javax.persistence.NoResultException;
 
 @Repository
 @Slf4j
-public class CounterpartyDaoImpl implements CounterpartyDao{
+public class CounterpartyDaoImpl implements CounterpartyDao {
 
     private final EntityManager entityManager;
 

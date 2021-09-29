@@ -1,7 +1,7 @@
 package com.example.bankapisberstart.exceptionhandling;
 
 
-import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.*;
+import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.IncorrectRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

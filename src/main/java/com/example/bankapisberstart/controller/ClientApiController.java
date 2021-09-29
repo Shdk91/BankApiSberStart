@@ -2,6 +2,7 @@ package com.example.bankapisberstart.controller;
 
 import com.example.bankapisberstart.cache.AddCashRequestCacheImpl;
 import com.example.bankapisberstart.cache.CreateCardRequestCacheImpl;
+import com.example.bankapisberstart.cache.TranslationRequestCache;
 import com.example.bankapisberstart.dto.inputdto.*;
 import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.outputdto.CardOutDto;
@@ -35,15 +36,19 @@ public class ClientApiController {
 
     private final CreateCardRequestCacheImpl cardRequestCache;
 
+    private final TranslationRequestCache translationRequestCache;
+
     @Autowired
     public ClientApiController(ClientService clientService,
                                AddCashRequestCacheImpl addCashRequestCache,
                                CreateCardRequestCacheImpl cardRequestCache,
-                               CounterpartyService counterpartyService) {
+                               CounterpartyService counterpartyService,
+                               TranslationRequestCache translationRequestCache) {
         this.clientService = clientService;
         this.addCashRequestCache = addCashRequestCache;
         this.cardRequestCache = cardRequestCache;
         this.counterpartyService = counterpartyService;
+        this.translationRequestCache = translationRequestCache;
     }
 
     @GetMapping("/getAccounts")
@@ -87,7 +92,7 @@ public class ClientApiController {
             description = "Позволяет клиентам внести средства на счет или карту по номеру")
     public ResponseEntity<String> addCash(@Valid @RequestBody AddCashDto requestBody) {
         if (addCashRequestCache.checkRequest(requestBody)) {
-            throw new IdempotencyException("Слишком много однотипных запросов");
+            throw new IdempotencyException("");
         }
 
         clientService.addCash(requestBody);
@@ -107,7 +112,7 @@ public class ClientApiController {
             description = "Создание новой карты привязанной к определенному счету")
     public ResponseEntity<String> createCard(@Valid @RequestBody CreateCardDto requestBody) {
         if (cardRequestCache.checkRequest(requestBody)) {
-            throw new IdempotencyException("Слишком много однотипных запросов");
+            throw new IdempotencyException("");
         }
 
         Card card = clientService.createCard(requestBody);
@@ -133,7 +138,13 @@ public class ClientApiController {
             summary = "Перевод денег контрагенту",
             description = "Позволяет клиенту перевести деньги контрагенту из списка")
     public ResponseEntity<String> translationMoney(@Valid @RequestBody TranslationDto param) {
+        if (translationRequestCache.checkRequest(param)){
+            throw new IdempotencyException("");
+        }
+
         clientService.translationMoney(param);
+
+        translationRequestCache.addRequest(param);
 
         String message = "Перевод контрагенту с ID " + param.getCounterpartyId() + "выполнен";
         return new ResponseEntity<>(message, HttpStatus.OK);

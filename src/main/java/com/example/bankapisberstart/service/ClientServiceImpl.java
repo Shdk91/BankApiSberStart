@@ -222,7 +222,7 @@ public class ClientServiceImpl implements ClientService {
         BigDecimal sum = requestParam.getSum();
 
         log.debug("Клиент" + login + "хочет перевести деньги контрагенту: "
-                + counterpartyId + "  со счета с Id: " + accountId );
+                + counterpartyId + "  со счета с Id: " + accountId);
 
 
         BankAccount bankAccount = clientDao.getAccountListFromClient(login)
@@ -235,7 +235,7 @@ public class ClientServiceImpl implements ClientService {
                 .findFirst().orElseThrow(() -> new NoSuchCounterpartyException(counterpartyId.toString()));
 
         BigDecimal balance = bankAccount.getBalance();
-        if (!(balance.compareTo(sum) >= 0)){
+        if (!(balance.compareTo(sum) >= 0)) {
             throw new SmallBalanceException(bankAccount.getNumber());
         }
 

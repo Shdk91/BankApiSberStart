@@ -35,8 +35,8 @@ public class Counterparty {
 
     @ManyToMany()
     @JoinTable(name = "clients_counterparties"
-            , joinColumns = @JoinColumn (name ="counterparties_id")
-            , inverseJoinColumns = @JoinColumn (name = "client_id")
+            , joinColumns = @JoinColumn(name = "counterparties_id")
+            , inverseJoinColumns = @JoinColumn(name = "client_id")
     )
     @JsonIgnore
     private List<Client> clientList;

@@ -2,7 +2,6 @@ package com.example.bankapisberstart.service;
 
 import com.example.bankapisberstart.dto.inputdto.AddCounterpartyDto;
 import com.example.bankapisberstart.dto.inputdto.DefaultGetDto;
-import com.example.bankapisberstart.dto.inputdto.TranslationDto;
 import com.example.bankapisberstart.dto.outputdto.CounterpartiesOutDto;
 import org.springframework.stereotype.Service;
 

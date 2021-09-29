@@ -4,7 +4,6 @@ import com.example.bankapisberstart.dao.ClientDao;
 import com.example.bankapisberstart.dao.CounterpartyDao;
 import com.example.bankapisberstart.dto.inputdto.AddCounterpartyDto;
 import com.example.bankapisberstart.dto.inputdto.DefaultGetDto;
-import com.example.bankapisberstart.dto.inputdto.TranslationDto;
 import com.example.bankapisberstart.dto.outputdto.CounterpartiesOutDto;
 import com.example.bankapisberstart.entity.Client;
 import com.example.bankapisberstart.entity.Counterparty;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 @Service
@@ -34,6 +32,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
     /**
      * Метод возвращает список контрагентов клиента. В случае отсутствия улиента в бд
      * выбрасывает NoSuchClientException. Если у клиента нет контрагентов возвращает пустое тело.
+     *
      * @param requestParam
      * @return CounterpartiesOutDto
      */
@@ -48,7 +47,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
         List<CounterpartiesOutDto> counterpartiesOutDtos = new ArrayList<>();
 
-        for(Counterparty counterparty : counterparties) {
+        for (Counterparty counterparty : counterparties) {
             counterpartiesOutDtos.add(CounterpartiesOutDto.getInstance(counterparty));
         }
         log.debug(login + " передаемм список контрагентов");
