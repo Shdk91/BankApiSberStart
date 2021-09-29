@@ -1,6 +1,6 @@
-package com.example.bankapisberstart.exceptionhandling;
+package com.example.bankapisberstart.exceptionhandling.incorrectrequestexception;
 
-public class NoSuchAccountException extends RuntimeException {
+public class NoSuchAccountException extends IncorrectRequestException {
 
     private static final String MESSAGE = "Активный счет(а) для {} не найдены";
 

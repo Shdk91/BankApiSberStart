@@ -1,8 +1,7 @@
 package com.example.bankapisberstart.dao;
 
 import com.example.bankapisberstart.entity.Counterparty;
-import com.example.bankapisberstart.exceptionhandling.DuplicateCounterpartyException;
-import com.example.bankapisberstart.exceptionhandling.NoSuchCounterpartyException;
+import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.DuplicateCounterpartyException;
 import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

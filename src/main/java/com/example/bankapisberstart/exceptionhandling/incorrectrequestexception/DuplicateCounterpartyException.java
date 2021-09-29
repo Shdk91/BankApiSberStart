@@ -1,6 +1,6 @@
-package com.example.bankapisberstart.exceptionhandling;
+package com.example.bankapisberstart.exceptionhandling.incorrectrequestexception;
 
-public class DuplicateCounterpartyException extends RuntimeException {
+public class DuplicateCounterpartyException extends IncorrectRequestException {
 
     private static final String MESSAGE = "{} такой контрагент уже существует";
 
