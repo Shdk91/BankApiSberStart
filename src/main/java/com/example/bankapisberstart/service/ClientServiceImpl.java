@@ -6,14 +6,16 @@ import com.example.bankapisberstart.dao.ClientDao;
 import com.example.bankapisberstart.dto.inputdto.AddCashDto;
 import com.example.bankapisberstart.dto.inputdto.CreateCardDto;
 import com.example.bankapisberstart.dto.inputdto.GetBalanceDto;
-import com.example.bankapisberstart.dto.inputdto.GetCardsOrAccountsDto;
+import com.example.bankapisberstart.dto.inputdto.DefaultGetDto;
 import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.outputdto.CardOutDto;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Transaction;
 import com.example.bankapisberstart.entity.TransactionType;
-import com.example.bankapisberstart.exceptionhandling.NoSuchClientException;
+import com.example.bankapisberstart.exceptionhandling.IncorrectNumberException;
+import com.example.bankapisberstart.exceptionhandling.NoSuchAccountException;
+import com.example.bankapisberstart.exceptionhandling.NoSuchCardException;
 import com.example.bankapisberstart.utils.NumberGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,7 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<BankAccountOutDTO> getAccountList(GetCardsOrAccountsDto requestParam) {
+    public List<BankAccountOutDTO> getAccountList(DefaultGetDto requestParam) {
         String login = requestParam.getLogin();
 
         log.debug(login + " запрашивает список счетов!");
@@ -63,8 +65,7 @@ public class ClientServiceImpl implements ClientService {
                 .filter(BankAccount::isActive).collect(Collectors.toList());
 
         if (bankAccounts.isEmpty()) {
-            String message = "У клиента " + login + " нет активных счетов";
-            throw new NoSuchClientException(message);
+            throw new NoSuchAccountException(login);
         }
 
         List<BankAccountOutDTO> bankAccountOutDTOList = new ArrayList<>();
@@ -87,7 +88,7 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<CardOutDto> getCardList(GetCardsOrAccountsDto requestParam) {
+    public List<CardOutDto> getCardList(DefaultGetDto requestParam) {
         String login = requestParam.getLogin();
 
         log.debug(login + " запрашивает список карт");
@@ -98,8 +99,7 @@ public class ClientServiceImpl implements ClientService {
                 .collect(Collectors.toList());
 
         if (cards.isEmpty()) {
-            String message = "У клиента " + login + " нет активных карт";
-            throw new NoSuchClientException(message);
+            throw new NoSuchCardException(login);
         }
 
         List<CardOutDto> cardOutDtoList = new ArrayList<>();
@@ -136,8 +136,7 @@ public class ClientServiceImpl implements ClientService {
             return bankAccount.getBalance().toString();
 
         } else {
-            String message = login + " запросил баланс с  не валидным номер карты или счета";
-            throw new NoSuchClientException(message);
+            throw new IncorrectNumberException(login + ":" + number);
         }
     }
 
@@ -204,8 +203,7 @@ public class ClientServiceImpl implements ClientService {
             log.debug(login + "хочет внести деньги на счет" + number);
             bankAccount = checkBankAccount(login, number);
         } else {
-            String message = login + " не валидный номер карты или счета";
-            throw new NoSuchClientException(message);
+            throw new IncorrectNumberException(login + ":" + number);
         }
 
         log.debug(login + "Создание банковской транзакции");
@@ -226,28 +224,26 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private BankAccount checkBankAccount(String login, String number) {
-        String message = login + " не имеет активных счетов с номером " + number;
+
         if (!(number.length() == 20)) {
-            String message2 = login + " не валидный номер счета";
-            throw new NoSuchClientException(message);
+            throw new IncorrectNumberException(login + ":" + number);
         }
         BankAccount bankAccount = clientDao.getAccountListFromClient(login).stream()
                 .filter(BankAccount::isActive)
                 .filter(x -> x.getNumber().equals(number))
-                .findFirst().orElseThrow(() -> new NoSuchClientException(message));
+                .findFirst().orElseThrow(() -> new NoSuchAccountException(login + ":" + number));
         return bankAccount;
     }
 
     private Card checkCard(String login, String number) {
-        String message = login + " не имеет активных карт с номером " + number;
+
         if (!(number.length() == 16)) {
-            String message2 = login + " не валидный номер карты";
-            throw new NoSuchClientException(message);
+            throw new IncorrectNumberException(login + ":" + number);
         }
         Card card = clientDao.getCardsListFromClientLogin(login).stream()
                 .filter(Card::isActive)
                 .filter(x -> x.getNumber().equals(number))
-                .findFirst().orElseThrow(() -> new NoSuchClientException(message));
+                .findFirst().orElseThrow(() -> new NoSuchCardException(login + ":" + number));
         return card;
     }
 }

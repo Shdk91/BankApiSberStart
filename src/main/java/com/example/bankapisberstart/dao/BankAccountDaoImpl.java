@@ -22,8 +22,8 @@ public class BankAccountDaoImpl implements BankAccountDao {
         try {
             entityManager.persist(bankAccount);
         } catch (Exception e) {
-            log.warn(e.getMessage());
-            throw new UnknownSQLException("попробуйте позже");
+            log.debug(e.getMessage());
+            throw new UnknownSQLException("");
         }
     }
 }

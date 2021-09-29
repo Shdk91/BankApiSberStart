@@ -63,14 +63,14 @@ CREATE TABLE counterparties
     primary key (id)
 );
 
-CREATE TABLE client_counterparty
+CREATE TABLE clients_counterparties
 (
     client_id           BIGINT NOT NULL,
-    counterparty_id     BIGINT NOT NULL,
+    counterparties_id     BIGINT NOT NULL,
 
-    primary key (client_id, counterparty_id),
+    primary key (client_id, counterparties_id),
     foreign key (client_id) references clients(id),
-    foreign key (counterparty_id) references counterparties(id)
+    foreign key (counterparties_id) references counterparties(id)
 );
 
 CREATE INDEX client_login
@@ -90,3 +90,11 @@ values ('22222222222222222222', 'RUB', 1);
 
 INSERT INTO cards ( card_number, client_id, account_id)
 values ('4222422242224222', 1, 1);
+
+INSERT INTO counterparties (name, account_number, tax_number)
+VALUES ('рога и копыта', '12345123451234512345', '0987654321'),
+       ('березка','11111222223333344444','1234567890');
+
+INSERT into clients_counterparties (client_id, counterparties_id)
+values (1,1),
+       (1,2);

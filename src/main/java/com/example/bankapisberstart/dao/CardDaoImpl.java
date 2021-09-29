@@ -25,7 +25,7 @@ public class CardDaoImpl implements CardDao {
                     .getSingleResult();
             return card;
         } catch (Exception e) {
-            log.warn(e.getMessage() + " проверка уникальности номера карты");
+            log.debug(e.getMessage() + " проверка уникальности номера карты");
             return null;
         }
     }
@@ -35,8 +35,8 @@ public class CardDaoImpl implements CardDao {
         try {
             entityManager.persist(card);
         } catch (Exception e) {
-            log.warn(e.getMessage());
-            throw new UnknownSQLException("попробуйте позже");
+            log.debug(e.getMessage());
+            throw new UnknownSQLException("");
         }
     }
 }

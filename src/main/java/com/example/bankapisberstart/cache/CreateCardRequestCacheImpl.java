@@ -28,7 +28,7 @@ public class CreateCardRequestCacheImpl implements RequestCache<CreateCardDto> {
     public void clear() {
         if (!(map.isEmpty())) {
             map.forEach(((cardDto, localDateTime) -> {
-                LocalDateTime dateTime = LocalDateTime.now().minusSeconds(6000);
+                LocalDateTime dateTime = LocalDateTime.now().minusSeconds(3600);
                 if (localDateTime.compareTo(dateTime) > 0) {
                     map.remove(cardDto);
                 }

@@ -18,6 +18,30 @@ public class ClientApiExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(IncorrectNumberException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(NoSuchAccountException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(NoSuchCardException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ClientIncorrectData> handleException(UnknownSQLException exception) {
         ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
         clientIncorrectData.setInfo(exception.getMessage());
@@ -31,6 +55,14 @@ public class ClientApiExceptionHandler {
         clientIncorrectData.setInfo(exception.getMessage());
 
         return new ResponseEntity<>(clientIncorrectData, HttpStatus.LOCKED);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(NoSuchCounterpartyException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
     }
 
 }

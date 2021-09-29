@@ -3,6 +3,9 @@ package com.example.bankapisberstart.dao;
 import com.example.bankapisberstart.entity.BankAccount;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.entity.Client;
+import com.example.bankapisberstart.entity.Counterparty;
+import com.example.bankapisberstart.exceptionhandling.NoSuchAccountException;
+import com.example.bankapisberstart.exceptionhandling.NoSuchCardException;
 import com.example.bankapisberstart.exceptionhandling.NoSuchClientException;
 import com.example.bankapisberstart.exceptionhandling.UnknownSQLException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,46 +27,56 @@ public class ClientDaoImpl implements ClientDao {
 
 
     @Override
-    public Client findClientFromLogin(String login) {
+    public Client findClientByLogin(String login) {
         try {
             Client client = (Client) entityManager
-                    .createQuery("SELECT client FROM Client client WHERE client.login = '" + login + "'")
+                    .createQuery("SELECT client FROM " +
+                            "Client client WHERE client.login = '" + login + "'")
                     .getSingleResult();
             return client;
         } catch (NoResultException e) {
-            String message = login + " клиент с таким логином не найден в базе данных!";
-            throw new NoSuchClientException(message);
+            throw new NoSuchClientException(login);
         } catch (Exception exp) {
-            log.warn(login + " " + exp.getMessage());
-            throw new UnknownSQLException("попробуйте позже");
+            log.debug(login + " " + exp.getMessage());
+            throw new UnknownSQLException("");
         }
     }
 
     @Override
     public List<BankAccount> getAccountListFromClient(String login) {
-        Client client = findClientFromLogin(login);
+        Client client = findClientByLogin(login);
         try {
             return client.getAccountList();
         } catch (NoResultException e) {
-            String message = login + " у данного клиента нет счетов";
-            throw new NoSuchClientException(message);
+            throw new NoSuchAccountException(login);
         } catch (Exception exp) {
-            log.warn(login + " " + exp.getMessage());
-            throw new UnknownSQLException("попробуйте позже");
+            log.debug(login + " " + exp.getMessage());
+            throw new UnknownSQLException("");
         }
     }
 
     @Override
     public List<Card> getCardsListFromClientLogin(String login) {
-        Client client = findClientFromLogin(login);
+        Client client = findClientByLogin(login);
         try {
             return client.getCards();
         } catch (NoResultException e) {
-            String message = login + " у данного клиента нет карт";
-            throw new NoSuchClientException(message);
+            throw new NoSuchCardException(login);
         } catch (Exception exp) {
-            log.warn(login + " " + exp.getMessage());
-            throw new UnknownSQLException("попробуйте позже");
+            log.debug(login + " " + exp.getMessage());
+            throw new UnknownSQLException("");
+        }
+    }
+
+    @Override
+    public List<Counterparty> getCounterpartiesByClientLogin(String login) {
+        Client client = findClientByLogin(login);
+        try {
+            List<Counterparty> counterparties = client.getCounterparties();
+            return counterparties;
+        } catch (Exception exp) {
+            log.debug(login + " " + exp.getMessage());
+            throw new UnknownSQLException("");
         }
     }
 

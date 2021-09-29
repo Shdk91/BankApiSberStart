@@ -2,15 +2,14 @@ package com.example.bankapisberstart.controller;
 
 import com.example.bankapisberstart.cache.AddCashRequestCacheImpl;
 import com.example.bankapisberstart.cache.CreateCardRequestCacheImpl;
-import com.example.bankapisberstart.dto.inputdto.AddCashDto;
-import com.example.bankapisberstart.dto.inputdto.CreateCardDto;
-import com.example.bankapisberstart.dto.inputdto.GetBalanceDto;
-import com.example.bankapisberstart.dto.inputdto.GetCardsOrAccountsDto;
+import com.example.bankapisberstart.dto.inputdto.*;
 import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.outputdto.CardOutDto;
+import com.example.bankapisberstart.dto.outputdto.CounterpartiesOutDto;
 import com.example.bankapisberstart.entity.Card;
 import com.example.bankapisberstart.exceptionhandling.IdempotencyException;
 import com.example.bankapisberstart.service.ClientService;
+import com.example.bankapisberstart.service.CounterpartyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -30,22 +29,28 @@ public class ClientApiController {
 
     private final ClientService clientService;
 
+    private final CounterpartyService counterpartyService;
+
     private final AddCashRequestCacheImpl addCashRequestCache;
 
     private final CreateCardRequestCacheImpl cardRequestCache;
 
     @Autowired
-    public ClientApiController(ClientService clientService, AddCashRequestCacheImpl addCashRequestCache, CreateCardRequestCacheImpl cardRequestCache) {
+    public ClientApiController(ClientService clientService,
+                               AddCashRequestCacheImpl addCashRequestCache,
+                               CreateCardRequestCacheImpl cardRequestCache,
+                               CounterpartyService counterpartyService) {
         this.clientService = clientService;
         this.addCashRequestCache = addCashRequestCache;
         this.cardRequestCache = cardRequestCache;
+        this.counterpartyService = counterpartyService;
     }
 
     @GetMapping("/getAccounts")
     @Operation(
             summary = "Получение списка счетов",
             description = "Позволяет клиентам получить список счетов")
-    public List<BankAccountOutDTO> getAccountList(@Valid @ModelAttribute GetCardsOrAccountsDto param) {
+    public List<BankAccountOutDTO> getAccountList(@Valid @ModelAttribute DefaultGetDto param) {
 
         return clientService.getAccountList(param);
     }
@@ -54,7 +59,7 @@ public class ClientApiController {
     @Operation(
             summary = "Получение списка карт",
             description = "Позволяет клиентам получить список карт")
-    public List<CardOutDto> getCardList(@Valid @ModelAttribute GetCardsOrAccountsDto param) {
+    public List<CardOutDto> getCardList(@Valid @ModelAttribute DefaultGetDto param) {
 
         return clientService.getCardList(param);
     }
@@ -66,6 +71,14 @@ public class ClientApiController {
     public String getBalance(@Valid @ModelAttribute GetBalanceDto param) {
 
         return clientService.getBalance(param);
+    }
+
+    @GetMapping("/getCounterparties")
+    @Operation(
+            summary = "Получение списка контрагентов",
+            description = "Позволяет вывести список контрагентов клиента")
+    public List<CounterpartiesOutDto> getCounterparties(@Valid @ModelAttribute DefaultGetDto param) {
+        return counterpartyService.getCounterparties(param);
     }
 
     @PostMapping("/addCash")
@@ -103,6 +116,12 @@ public class ClientApiController {
 
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+//    @PostMapping("/addCouterparty")
+//    @Operation(
+//            summary = "Добавление контрагента",
+//            description = "Позволяет клиенту добавлять контрагента")
+//    public
 
 
 }
