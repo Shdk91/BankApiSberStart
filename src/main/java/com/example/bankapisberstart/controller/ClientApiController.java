@@ -117,11 +117,15 @@ public class ClientApiController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-//    @PostMapping("/addCouterparty")
-//    @Operation(
-//            summary = "Добавление контрагента",
-//            description = "Позволяет клиенту добавлять контрагента")
-//    public
+    @PostMapping("/addCounterparty")
+    @Operation(
+            summary = "Добавление контрагента",
+            description = "Позволяет клиенту добавлять контрагента")
+    public ResponseEntity<String> addCounterparties(@Valid @RequestBody AddCounterpartyDto param) {
+        counterpartyService.addCounterparty(param);
+        String message = "Контрагент " + param.getName() + "добавлен";
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 
 
 }

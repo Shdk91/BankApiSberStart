@@ -57,7 +57,10 @@ public class Client {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
             CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "counterparty_id")
+    @JoinTable(name = "clients_counterparties"
+            , joinColumns = @JoinColumn (name ="client_id")
+            , inverseJoinColumns = @JoinColumn (name = "counterparties_id")
+    )
     @JsonIgnore
     private List<Counterparty> counterparties;
 

@@ -17,5 +17,6 @@ public interface ClientDao {
     List<Card> getCardsListFromClientLogin(String login);
 
     List<Counterparty> getCounterpartiesByClientLogin(String login);
+
 }
 

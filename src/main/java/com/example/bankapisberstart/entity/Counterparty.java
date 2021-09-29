@@ -33,9 +33,11 @@ public class Counterparty {
     @Column(name = "tax_number")
     private String taxNumber;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "client_id")
+    @ManyToMany()
+    @JoinTable(name = "clients_counterparties"
+            , joinColumns = @JoinColumn (name ="counterparties_id")
+            , inverseJoinColumns = @JoinColumn (name = "client_id")
+    )
     @JsonIgnore
     private List<Client> clientList;
 

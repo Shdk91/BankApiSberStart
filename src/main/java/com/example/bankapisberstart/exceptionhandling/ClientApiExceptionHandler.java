@@ -65,4 +65,12 @@ public class ClientApiExceptionHandler {
         return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ClientIncorrectData> handleException(DuplicateCounterpartyException exception) {
+        ClientIncorrectData clientIncorrectData = new ClientIncorrectData();
+        clientIncorrectData.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(clientIncorrectData, HttpStatus.BAD_REQUEST);
+    }
+
 }
