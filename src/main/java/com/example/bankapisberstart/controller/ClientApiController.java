@@ -123,7 +123,19 @@ public class ClientApiController {
             description = "Позволяет клиенту добавлять контрагента")
     public ResponseEntity<String> addCounterparties(@Valid @RequestBody AddCounterpartyDto param) {
         counterpartyService.addCounterparty(param);
+
         String message = "Контрагент " + param.getName() + "добавлен";
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PostMapping("/translationMoney")
+    @Operation(
+            summary = "Перевод денег контрагенту",
+            description = "Позволяет клиенту перевести деньги контрагенту из списка")
+    public ResponseEntity<String> translationMoney(@Valid @RequestBody TranslationDto param) {
+        clientService.translationMoney(param);
+
+        String message = "Перевод контрагенту с ID " + param.getCounterpartyId() + "выполнен";
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 

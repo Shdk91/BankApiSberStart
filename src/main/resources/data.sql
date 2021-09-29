@@ -65,7 +65,7 @@ CREATE TABLE counterparties
 
 CREATE TABLE clients_counterparties
 (
-    client_id           BIGINT NOT NULL,
+    client_id             BIGINT NOT NULL,
     counterparties_id     BIGINT NOT NULL,
 
     primary key (client_id, counterparties_id),

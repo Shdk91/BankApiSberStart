@@ -3,19 +3,11 @@ package com.example.bankapisberstart.service;
 import com.example.bankapisberstart.dao.BankAccountDao;
 import com.example.bankapisberstart.dao.CardDao;
 import com.example.bankapisberstart.dao.ClientDao;
-import com.example.bankapisberstart.dto.inputdto.AddCashDto;
-import com.example.bankapisberstart.dto.inputdto.CreateCardDto;
-import com.example.bankapisberstart.dto.inputdto.GetBalanceDto;
-import com.example.bankapisberstart.dto.inputdto.DefaultGetDto;
+import com.example.bankapisberstart.dto.inputdto.*;
 import com.example.bankapisberstart.dto.outputdto.BankAccountOutDTO;
 import com.example.bankapisberstart.dto.outputdto.CardOutDto;
-import com.example.bankapisberstart.entity.BankAccount;
-import com.example.bankapisberstart.entity.Card;
-import com.example.bankapisberstart.entity.Transaction;
-import com.example.bankapisberstart.entity.TransactionType;
-import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.IncorrectNumberException;
-import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.NoSuchAccountException;
-import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.NoSuchCardException;
+import com.example.bankapisberstart.entity.*;
+import com.example.bankapisberstart.exceptionhandling.incorrectrequestexception.*;
 import com.example.bankapisberstart.utils.NumberGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,8 +184,6 @@ public class ClientServiceImpl implements ClientService {
         String number = requestBody.getNumber();
         BigDecimal sum = requestBody.getSum();
 
-        log.debug(login + number + sum);
-
         BankAccount bankAccount;
 
         if (number.length() == 16) {
@@ -218,6 +208,49 @@ public class ClientServiceImpl implements ClientService {
         log.debug(login + " изменение баланса счета: " + number);
         BigDecimal currentBalance = bankAccount.getBalance();
         BigDecimal newBalance = currentBalance.add(sum);
+        bankAccount.setBalance(newBalance);
+
+        bankAccountDao.updateAccount(bankAccount);
+    }
+
+    @Override
+    @Transactional
+    public void translationMoney(TranslationDto requestParam) {
+        String login = requestParam.getLogin();
+        Long accountId = requestParam.getAccountId();
+        Long counterpartyId = requestParam.getCounterpartyId();
+        BigDecimal sum = requestParam.getSum();
+
+        log.debug("Клиент" + login + "хочет перевести деньги контрагенту: "
+                + counterpartyId + "  со счета с Id: " + accountId );
+
+
+        BankAccount bankAccount = clientDao.getAccountListFromClient(login)
+                .stream().filter(BankAccount::isActive)
+                .filter(x -> x.getId().equals(accountId))
+                .findFirst().orElseThrow(() -> new NoSuchAccountException(login + ":" + accountId));
+
+        Counterparty counterparty = clientDao.getCounterpartiesByClientLogin(login)
+                .stream().filter(x -> x.getId().equals(counterpartyId))
+                .findFirst().orElseThrow(() -> new NoSuchCounterpartyException(counterpartyId.toString()));
+
+        BigDecimal balance = bankAccount.getBalance();
+        if (!(balance.compareTo(sum) >= 0)){
+            throw new SmallBalanceException(bankAccount.getNumber());
+        }
+
+        log.debug(login + "создание банковской транзации");
+        Transaction transaction = new Transaction();
+        transaction.setTransactionType(TransactionType.TRANSLATION);
+        transaction.setPlus(false);
+        transaction.setTime(LocalDateTime.now());
+        transaction.setSum(sum);
+        transaction.setCounterpartyAccount(counterparty.getAccountNumber());
+
+        bankAccount.addTransaction(transaction);
+
+        log.debug(login + " изменение баланса счета: " + bankAccount.getNumber());
+        BigDecimal newBalance = balance.subtract(sum);
         bankAccount.setBalance(newBalance);
 
         bankAccountDao.updateAccount(bankAccount);
