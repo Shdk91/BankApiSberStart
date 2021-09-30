@@ -54,6 +54,12 @@ public class CounterpartyServiceImpl implements CounterpartyService {
         return counterpartiesOutDtos;
     }
 
+    /**
+     * Метод для добавления контрагента в базу. При не валидных данных или при наличии
+     * данного контрагента в БД выбрасывает соответствующий ситуации эксепшн.
+     * @param requestParam
+     *
+     */
     @Override
     @Transactional
     public void addCounterparty(AddCounterpartyDto requestParam) {
