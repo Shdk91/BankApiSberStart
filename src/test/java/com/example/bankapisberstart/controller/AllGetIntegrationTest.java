@@ -93,4 +93,20 @@ public class AllGetIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void getCounterpartiesWithCorrectLogin() throws Exception {
+        this.mockMvc
+                .perform(get("/clientApi/getCounterparties?login=kozlovda"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getCounterpartiesWithFalseLogin() throws Exception {
+        this.mockMvc
+                .perform(get("/clientApi/getCounterparties?login=kozlovd"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 }

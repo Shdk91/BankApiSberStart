@@ -213,13 +213,21 @@ public class ClientServiceImpl implements ClientService {
         bankAccountDao.updateAccount(bankAccount);
     }
 
+    /**
+     * Метод принимает данные из тела запроса получает клиента. Проверяет наличие активного счета.
+     * Проверяет наличие контрагента.
+     * Создает транзакцию, меняет баланс счета и сохраняет все изменения в бд.
+     * В случае ошибки в данных запроса будет выброшен соответствующий эксепшен.
+     *
+     * @param requestBody - параметры из тела Post запроса
+     */
     @Override
     @Transactional
-    public void translationMoney(TranslationDto requestParam) {
-        String login = requestParam.getLogin();
-        Long accountId = requestParam.getAccountId();
-        Long counterpartyId = requestParam.getCounterpartyId();
-        BigDecimal sum = requestParam.getSum();
+    public void translationMoney(TranslationDto requestBody) {
+        String login = requestBody.getLogin();
+        Long accountId = requestBody.getAccountId();
+        Long counterpartyId = requestBody.getCounterpartyId();
+        BigDecimal sum = requestBody.getSum();
 
         log.debug("Клиент" + login + "хочет перевести деньги контрагенту: "
                 + counterpartyId + "  со счета с Id: " + accountId);
