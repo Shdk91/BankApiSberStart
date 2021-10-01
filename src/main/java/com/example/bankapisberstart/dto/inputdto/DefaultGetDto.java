@@ -1,4 +1,4 @@
-package com.example.bankapisberstart.dto.input_dto;
+package com.example.bankapisberstart.dto.inputdto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-public class GetCardsOrAccountsDto {
+public class DefaultGetDto {
 
     @NotBlank
     private String login;

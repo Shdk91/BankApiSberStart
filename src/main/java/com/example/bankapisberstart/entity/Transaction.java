@@ -1,10 +1,12 @@
 package com.example.bankapisberstart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -35,8 +37,12 @@ public class Transaction {
     @Column(name = "time_of_transact")
     private LocalDateTime time;
 
+    @Column(name = "sum")
+    private BigDecimal sum;
+
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private BankAccount bankAccount;
 
 }

@@ -47,13 +47,29 @@ public class Client {
     @Column(name = "passport_id")
     private Long passportId;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     @JsonIgnore
     private List<BankAccount> accountList;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     @JsonIgnore
     private List<Card> cards;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+            CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "clients_counterparties"
+            , joinColumns = @JoinColumn(name = "client_id")
+            , inverseJoinColumns = @JoinColumn(name = "counterparties_id")
+    )
+    @JsonIgnore
+    private List<Counterparty> counterparties;
+
+    public void addCounterParty(Counterparty counterparty) {
+        if (counterparties == null) {
+            counterparties = new ArrayList<>();
+        }
+        counterparties.add(counterparty);
+    }
 
     public void addAccount(BankAccount account) {
         if (accountList == null) {
