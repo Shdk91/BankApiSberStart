@@ -22,26 +22,6 @@ public class AddCashIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void addCashWithNormalData() throws Exception {
-        for (int i = 0; i < 4; i++) {
-            if (i == 0) {
-                mockMvc
-                        .perform(post("/clientApi/addCash")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(TestHelper.ADD_CASH_NORMAL))
-                        .andDo(print())
-                        .andExpect(status().isOk());
-            } else {
-                mockMvc
-                        .perform(post("/clientApi/addCash")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(TestHelper.ADD_CASH_NORMAL))
-                        .andDo(print())
-                        .andExpect(status().is4xxClientError());
-            }
-        }
-    }
 
     @Test
     public void addCashFalseName() throws Exception {

@@ -1,3 +1,15 @@
+DROP INDEX IF EXISTS client_login;
+DROP INDEX IF EXISTS card_client_id;
+DROP INDEX IF EXISTS account_client_id;
+DROP TABLE IF EXISTS clients_counterparties;
+DROP TABLE IF EXISTS counterparties;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS cards;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS clients;
+
+
+
 CREATE TABLE clients
 (
     id           BIGINT       NOT NULL AUTO_INCREMENT,
